@@ -49,6 +49,39 @@ const MarketplaceScreen = () => {
     }, [debouncedSearch, fetchServices])
   );
 
+  const handleDeleteService = (service) => {
+    Alert.alert(
+      'Delete Service',
+      `Are you sure you want to permanently delete "${service.title}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // First, delete the image from storage if it exists
+              if (service.image_url) {
+                const { error: storageError } = await supabase.storage.from('services').remove([service.image_url]);
+                if (storageError) throw storageError;
+              }
+
+              // Then, delete the service record from the database
+              const { error: dbError } = await supabase.from('services').delete().eq('id', service.id);
+              if (dbError) throw dbError;
+
+              // Optimistically update the UI
+              setServices(currentServices => currentServices.filter(s => s.id !== service.id));
+              Alert.alert('Success', 'Your service has been deleted.');
+            } catch (error) {
+              Alert.alert('Error', `Failed to delete service: ${error.message}`);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   // Only show the full-screen loader on the initial load when there are no services yet.
   if (loading && services.length === 0) {
     return <View className="flex-1 justify-center items-center"><ActivityIndicator size="large" color="#007AFF" /></View>;
@@ -59,7 +92,7 @@ const MarketplaceScreen = () => {
       <FlatList
         data={services}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <ServiceCard service={item} />}
+        renderItem={({ item }) => <ServiceCard service={item} onDelete={handleDeleteService} />}
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16 }}
         ListHeaderComponent={
           <>

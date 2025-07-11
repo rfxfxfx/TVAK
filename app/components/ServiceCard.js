@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
 
-const ServiceCard = ({ service }) => {
+const ServiceCard = ({ service, onDelete }) => {
   const { session } = useAuth();
   const navigation = useNavigation();
   const isOwner = session?.user?.id === service.user_id;
@@ -29,18 +29,24 @@ const ServiceCard = ({ service }) => {
       <View className="p-4">
         <Text className="text-xl font-bold text-gray-900" numberOfLines={1}>{service.title}</Text>
         <Text className="text-base text-gray-600 mt-1" numberOfLines={2}>{service.description}</Text>
-        <View className="flex-row items-center mt-4">
+        <View className="flex-row items-center justify-between mt-4">
           <Image source={{ uri: avatarUrl }} className="w-10 h-10 rounded-full" />
           <Text className="ml-3 text-sm font-semibold text-gray-700">{username}</Text>
+          <View className="flex-1" />
+          {isOwner && (
+            <View className="flex-row">
+              <TouchableOpacity
+                className="bg-gray-200 px-4 py-2 rounded-full"
+                onPress={() => navigation.navigate('EditService', { service })}
+              >
+                <Text className="font-semibold text-gray-800">Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="ml-2 bg-red-100 px-4 py-2 rounded-full" onPress={() => onDelete(service)}>
+                <Text className="font-semibold text-red-700">Delete</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
-        {isOwner && (
-          <TouchableOpacity
-            className="bg-gray-200 px-3 py-2 rounded-full"
-            onPress={() => navigation.navigate('EditService', { service })}
-          >
-            <Text className="font-semibold text-gray-800">Edit</Text>
-          </TouchableOpacity>
-        )}
       </View>
       <View className="bg-gray-50 px-4 py-3 border-t border-gray-200">
         <Text className="text-lg font-bold text-blue-600">${Number(service.price).toFixed(2)} <Text className="text-sm font-normal text-gray-500">/{service.price_unit.replace('_', ' ')}</Text></Text>

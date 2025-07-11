@@ -49,3 +49,9 @@ INSERT INTO public.services (user_id, title, description, price, price_unit, ima
 
 -- Note: You would need to manually upload a corresponding image to the 'services' storage bucket
 -- at the path 'premium_user/service_image.png' for this to display correctly.
+
+-- 6. Create Sample Chat Messages
+INSERT INTO public.messages (profile_id, content) VALUES
+('b0b0b0b0-0000-0000-0000-000000000002', 'Hey everyone! Just listed my social media management service on the marketplace. Check it out!'),
+('c0c0c0c0-0000-0000-0000-000000000003', 'Welcome! That looks great. I''m just starting the Intro to VA course.'),
+('a0a0a0a0-0000-0000-0000-000000000001', 'Welcome to the community! Let us know if you have any questions.');
