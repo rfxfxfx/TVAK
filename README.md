@@ -1,7 +1,7 @@
 # VAI (Virtual Assistant Intelligence) App
 
 ## Overview
-An AI-powered training and freelancer marketplace platform for Filipino virtual assistants.
+An AI-powered training and freelancer marketplace platform for Filipino virtual assistants..
 
 ## Key Modules
 - User Authentication & Roles (Free, Premium, Admin)
